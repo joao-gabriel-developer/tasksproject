@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Tarefas{% endblock %}
+<head>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+{% block content %}
+<div class="offset-1 col-10 list-div">
+    <h1>Lista de Tarefas</h1>
+    <div class="container dashboard">
+        <div class="col-4 dashboard-box" id="dashboard-lastdays">
+            <h4>Finalizadas nos últimos 30 dias</h4>
+            <span>{{ tasksrecently }}</span>
+
+        </div>
+        <div class="col-4 dashboard-box" id="dashboard-done">
+            <h4>Tarefas finalizadas</h4>
+            <span>{{ tasksdone }}</span>
+
+        </div>
+        <div class="col-4 dashboard-box" id="dashboard-doing">
+            <h4>Tarefas para fazer</h4>
+            <span>{{ tasksdoing }}</span>
+
+        </div>
+
+    </div>
+    <a id="add-link" href="newtask/">
+        <div class="col-2 add-div">
+            <i class="fas fa-plus"></i> Adicionar tarefa
+        </div>
+    </a>
+    <div class="col-9 search-div">
+        <input class="form-control" type="text" id="search" name="search" placeholder="Digite o nome da tarefa para buscar">
+        <i class="fas fa-search"></i>
+    </div>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li style="list-style: none;" {% if message.tags %}class="alert alert-{{message.tags}}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <ul class="task-list">
+        {% for task in tasks %}
+        {% if task.done == 'doing' %}
+            <li class="task-item">
+        {% else %}
+            <li class="task-item done">
+        {% endif %}
+                <span><a href="/task/{{task.id}}">{{task.title}}</a></span>
+                <span><a href="delete/{{task.id}}" class="delete-btn"><i class="fas fa-trash"></i></a></span>
+                <a href="edit/{{task.id}}"><span><i class="fas fa-edit"></i></span></a>
+                <a href="changestatus/{{task.id}}"><span><i class="fas fa-check"></i></span></a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="pagination">
+        <span class="step-links">
+            {% if tasks.has_previous %}
+                <a href="?page={{ tasks.previous_page_number }}"><i class="fas fa-arrow-left"></i></a>
+            {% endif %}
+
+            <span class="current">
+                {{ tasks.number }} de {{ tasks.paginator.num_pages }}
+            </span>
+
+            {% if tasks.has_next %}
+                <a href="?page={{ tasks.next_page_number }}"><i class="fas fa-arrow-right"></i></a>
+            {% endif %}
+        </span>
+
+    </div>
+</div>
+{% endblock %}
